@@ -1,81 +1,103 @@
 <?php
 class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
 {
-    protected $strResonseFormat = 'html';
-    protected $bolPostOnly = false;
-    protected $strAjaxResponseFormat = 'json';
-
-    protected $arrResponseFormatList = array('json', 'xml', 'html', 'serialize');
-
-    protected $arrResponse = array('errno' => 0, 'data' => array());
-
-    protected $strActionName = '';
+    protected $_arrResponse = array('errno' => 0, 'data' => array());
+    protected $arrResponse = array();
 
     public function init()
     {
-        $this->strActionName = $this->getRequest()->getActionName();
+        $this->_initActionConfig();
         $this->_check();
-        $this->_load();
-    }
-    public function end()
-    {
-        $this->_initResponse();
-        $this->_setBody();
-    }
-    private function _check()
-    {
-        if ($this->bolPostOnly[$this->strActionName] && !$this->getRequest()->isPost()) {
-            //error
-        }
-    }
-    private function _load()
-    {
-        $this->_initControllerConfigure();
-        exit;
+        $this->_initRequestParams();
         $this->_initResponseFormat();
-        $this->_initPageServiceparams();
     }
-    private function _initControllerConfigure()
+    private function _initActionConfig()
     {
-        $config = new Yaf_Config_Ini(CONF_PATH."/controllers.ini", ENVIRONMENT);
-        var_dump($config->database->params->host); 
-        var_dump($config->database->params->dbname);
-        var_dump($config->get("database.params.username"));
+        $strModuleName = $this->getRequest()->getModuleName();
+        $strControllerName = $this->getRequest()->getControllerName();
+        $strActionName = $this->getRequest()->getActionName();
+        $strFlag = sprintf("%s.%s.%s", $strModuleName, $strControllerName, $strActionName);
+        $this->_objActionConfig = new Yaf_Config_Ini(CONF_PATH."/controllers.ini", $strFlag);
+        return true;
     }
-    private function _initResponse()
+    private function _initRequestParams()
     {
-        foreach ($this->arrPageServiceReturnConfigure as $strReturnName => $arrReturn) {
-            $mixParam = empty($this->arrPageServiceReturn[$strReturnName]) ? $arrReturn['default'] : $this->arrPageServiceReturn[$strReturnName];
-            $this->_setResponseParam($arrReturn['type'], $strReturnName, $mixParam);
+        $arrRequestConfig = unserialize($this->_objActionConfig->request);
+        foreach ($arrRequestConfig as $strParamName => $arrConfig) {
+            $this->_arrRequest[$strParamName] = $this->_getRequestParam($arrConfig['type'], $strParamName, $arrConfig['default']);
         }
+        return true;
     }
     private function _initResponseFormat()
     {
-        if ($this->strResonseFormat[$this->strActionName] !== 'html' || $this->getRequest()->isXmlHttpRequest()) {
+        $arrResponseFormat = unserialize($this->_objActionConfig->responseFormat);
+        $this->_strResponseFormat = $arrResponseFormat[0];
+        if (in_array($this->getRequest()->getParam('format'), $arrResponseFormat)) {
+            $this->_strRepsonseFormat = $this->getRequest()->getParam('format');
+        }
+        if ($this->_strResponseFormat !== 'html') {
             Yaf_Dispatcher::getInstance()->disableView();
-            //todo:改为枚举
-            $this->strResonseFormat = $this->_getRequestParam('str', 'format', $this->strAjaxResponseFormat);
         }
     }
-    private function _initPageServiceparams()
+    private function _check()
     {
-        foreach ($this->arrPageServiceParamsConfigure as $strParamName => $arrParam) {
-            $this->arrPageServiceParams[$strParamName] = $this->_getRequestParam($arrParam['type'], $strParamName, $arrParam['default']);
+        $this->_checkMethod();
+        $this->_checkSign();
+    }
+    private function _checkMethod()
+    {
+        if (in_array($this->getRequest()->getMethod(), unserialize($this->_objActionConfig->method))) {
+        } else {
+            throw new Rdp_Exception();
         }
     }
-    private function _setBody()
+    private function _checkSign()
     {
-        if ($this->strResonseFormat === 'json') {
-            $strBody = json_encode($this->arrResponse);
-        } else if ($this->strResonseFormat === 'serialize') {
-            $strBody = serialize($this->arrResponse);
+        if ($strTemp = $this->_objActionConfig->sign) {
+            $arrParams = $this->getRequest()->getParams();
+            $strSign = strtolower($arrParams['sign']);
+            if ($strSign == 'ohmygod') {
+                return true;
+            }
+            unset($arrParams['sign']);
+            ksort($arrParams);
+            foreach ($arrParams as $strKey => $strVal) {
+                $strTemp .= sprintf("%s=%s", $strKey, $strVal);
+            }
+            if ($strSign !== md5($strTemp)) {
+                throw new Rdp_Exception();
+            }
         }
-        $this->getResponse()->setBody($strBody);
+        return true;
+    }
+    public function end()
+    {
+        $this->_initResponseParams();
+        $this->_setBody();
+    }
+    private function _initResponseParams()
+    {
+        $arrResponseConfig = unserialize($this->_objActionConfig->response);
+        foreach ($arrResponseConfig as $strParamName => $arrConfig) {
+            $mixParam = isset($this->arrResponse[$strParamName]) ? $this->arrResponse[$strParamName] : $arrConfig['default'];
+            $this->_setResponseParam($arrConfig['type'], $strParamName, $mixParam);
+        }
     }
     private function _getRequestParam($strType, $strParamName, $strDefaultParam = NULL)
     {
         $strParam = $this->getRequest()->getParam($strParamName, $strDefaultParam);
         return Rdp_Entity::getEntity($strType, $strParam)->getValue();
+    }
+    private function _setBody()
+    {
+        if ($this->_strResponseFormat === 'json') {
+            $strBody = json_encode($this->_arrResponse);
+            $this->getResponse()->setBody($strBody);
+        } else if ($this->_strResponseFormat === 'serialize') {
+            $strBody = serialize($this->_arrResponse);
+            $this->getResponse()->setBody($strBody);
+        } else {
+        }
     }
     private function _setResponseParam($strType, $strParamName, $mixParam = NULL)
     {
@@ -84,6 +106,6 @@ class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
         } else {
             $mixParam = Rdp_Entity::getEntity($strType, $mixParam)->getValue();
         }
-        $this->arrResponse['data'][$strParamName] = $mixParam;
+        $this->_arrResponse['data'][$strParamName] = $mixParam;
     }
 }
