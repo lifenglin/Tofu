@@ -1,8 +1,12 @@
 <?php
 class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
 {
-    protected $_arrResponse = array('errno' => 0, 'data' => array());
     protected $arrResponse = array();
+
+    private $_arrResponse = array('errno' => 0, 'data' => array());
+    private $_objActionConfig;
+    private $_strResponseFormat;
+    private $_arrRequest;
 
     public function init()
     {
