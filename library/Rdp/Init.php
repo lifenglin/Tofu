@@ -5,30 +5,30 @@ class Rdp_Init
 
     public static function init($app_name = null)
     {
-        if(self::$_isInit) {
+        if (self::$_isInit) {
             return false;
         }
         self::$_isInit = true;
 
         // 初始化基础环境
-        self::initBasicEnv();
+        self::_initBasicEnv();
 
         // 初始化App环境
-        self::initAppEnv($app_name);
+        self::_initAppEnv($app_name);
 
         // 初始化Ap框架
-        self::initYaf();
+        self::_initYaf();
 
         // 初始化日志库
         //self::initLog($app_name);
 
         // 执行产品线的auto_prepend
-        self::doProductPrepend();
+        self::_doProductPrepend();
 
         return Yaf_Application::app();
     }
 
-    private static function initBasicEnv()
+    private static function _initBasicEnv()
     {
         // 页面启动时间(us)，PHP5.4可用$_SERVER['REQUEST_TIME']
         define('REQUEST_TIME_US', intval(microtime(true)*1000000));
@@ -49,16 +49,16 @@ class Rdp_Init
         return true;
     }
 
-    private static function getAppName()
+    private static function _getAppName()
     {
         $pos = strrpos(rtrim(APP_PATH, '/'), '/');
         return trim(substr(APP_PATH, $pos), '/');
     }
 
-    private static function initAppEnv($app_name)
+    private static function _initAppEnv($app_name)
     {
         // 检测当前App
-        if($app_name != null || ($app_name = self::getAppName()) != null) {
+        if ($app_name != null || ($app_name = self::_getAppName()) != null) {
             define('MAIN_APP', $app_name);
         } else {
             define('MAIN_APP', 'unknown-app');
@@ -81,29 +81,27 @@ class Rdp_Init
      */
 
     // 初始化Ap
-    private static function initYaf()
+    private static function _initYaf()
     {
         $app = new Yaf_Application(CONF_PATH."/application.ini");
         return true;
     }
 
     // 执行产品线的auto_prepend
-    private static function doProductPrepend()
+    private static function _doProductPrepend()
     {
-        if(file_exists(APP_PATH."/auto_prepend.php"))
-        {
+        if (file_exists(APP_PATH."/auto_prepend.php")) {
             include_once APP_PATH."/auto_prepend.php";
         }
     }
 
-    private static function initLog()
+    private static function _initLog()
     {
         // 初始化日志库，仅为兼容老代码
         define('CLIENT_IP', Bd_Ip::getClientIp());
 
         //获取LogId
-        if(!defined('LOG_ID'))
-        {
+        if (!defined('LOG_ID')) {
             Bd_Log::genLogID();
         }
         //获取userip
@@ -112,24 +110,17 @@ class Rdp_Init
         //获取上一个经过的服务器
         define('FRONTEND_IP', Bd_Ip::getFrontendIp());
         //获取Product
-        if(getenv('HTTP_X_BD_PRODUCT'))
-        {
+        if (getenv('HTTP_X_BD_PRODUCT')) {
             define('PRODUCT', trim(getenv('HTTP_X_BD_PRODUCT')));
-        }
-        else
-        {
+        } else {
             define('PRODUCT', 'ORP');
         }
         //获取subsys
-        if(getenv('HTTP_X_BD_SUBSYS'))
-        {
+        if (getenv('HTTP_X_BD_SUBSYS')) {
             define('SUBSYS', trim(getenv('HTTP_X_BD_SUBSYS')));
-        }
-        else
-        {
+        } else {
             define('SUBSYS', 'ORP');
         }
         define("MODULE", APP);
     }
 }
-

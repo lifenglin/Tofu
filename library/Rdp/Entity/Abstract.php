@@ -13,7 +13,7 @@ class Rdp_Entity_Abstract extends Rdp_Core
 
     public function construct($strValue)
     {
-        $strValue !== NULL && $this->setValue($strValue);
+        $strValue !== null && $this->setValue($strValue);
     }
 
     public function setValue($strValue)

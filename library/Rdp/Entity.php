@@ -1,7 +1,7 @@
 <?php
 class Rdp_Entity extends Rdp_Core
 {
-    static public function getEntity($strType, $strValue = NULL)
+    static public function getEntity($strType, $strValue = null)
     {
         $intPos = strpos($strType, '_');
         $strNamespace = substr($strType, 0, $intPos);

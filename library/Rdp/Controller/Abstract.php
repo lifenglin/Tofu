@@ -87,7 +87,7 @@ class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
             $this->_setResponseParam($arrConfig['type'], $strParamName, $mixParam);
         }
     }
-    private function _getRequestParam($strType, $strParamName, $strDefaultParam = NULL)
+    private function _getRequestParam($strType, $strParamName, $strDefaultParam = null)
     {
         $strParam = $this->getRequest()->getParam($strParamName, $strDefaultParam);
         return Rdp_Entity::getEntity($strType, $strParam)->getValue();
@@ -103,7 +103,7 @@ class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
         } else {
         }
     }
-    private function _setResponseParam($strType, $strParamName, $mixParam = NULL)
+    private function _setResponseParam($strType, $strParamName, $mixParam = null)
     {
         if ($mixParam instanceof Rdp_Entity) {
             $mixParam = $mixParam->toArray();
