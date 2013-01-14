@@ -1,34 +1,59 @@
 <?php
+/**
+ * Rdp_Init
+ *
+ * PHP version 5
+ *
+ * @category  PHP
+ * @package   Rdp
+ * @author    lifenglin <lifenglin1987@gmail.com>
+ * @copyright 2013 lifenglin
+ * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @version   SVN: <svn_id>
+ * @link      https://github.com/lifenglin/rdp
+ */
+
+/**
+ * Rdp_Init 
+ *
+ * @category  PHP
+ * @package   Rdp
+ * @author    lifenglin <lifenglin1987@gmail.com>
+ * @copyright 2013 lifenglin1987@gmail.com
+ * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @version   Release: <package_version>
+ * @link      https://github.com/lifenglin/rdp
+ */
 class Rdp_Init
 {
     static private $_isInit = false;
 
     public static function init($app_name = null)
     {
-        if (self::$_isInit) {
+        if(self::$_isInit) {
             return false;
         }
         self::$_isInit = true;
 
         // 初始化基础环境
-        self::_initBasicEnv();
+        self::initBasicEnv();
 
         // 初始化App环境
-        self::_initAppEnv($app_name);
+        self::initAppEnv($app_name);
 
         // 初始化Ap框架
-        self::_initYaf();
+        self::initYaf();
 
         // 初始化日志库
         //self::initLog($app_name);
 
         // 执行产品线的auto_prepend
-        self::_doProductPrepend();
+        self::doProductPrepend();
 
         return Yaf_Application::app();
     }
 
-    private static function _initBasicEnv()
+    private static function initBasicEnv()
     {
         // 页面启动时间(us)，PHP5.4可用$_SERVER['REQUEST_TIME']
         define('REQUEST_TIME_US', intval(microtime(true)*1000000));
@@ -49,16 +74,16 @@ class Rdp_Init
         return true;
     }
 
-    private static function _getAppName()
+    private static function getAppName()
     {
         $pos = strrpos(rtrim(APP_PATH, '/'), '/');
         return trim(substr(APP_PATH, $pos), '/');
     }
 
-    private static function _initAppEnv($app_name)
+    private static function initAppEnv($app_name)
     {
         // 检测当前App
-        if ($app_name != null || ($app_name = self::_getAppName()) != null) {
+        if($app_name != null || ($app_name = self::getAppName()) != null) {
             define('MAIN_APP', $app_name);
         } else {
             define('MAIN_APP', 'unknown-app');
@@ -81,27 +106,29 @@ class Rdp_Init
      */
 
     // 初始化Ap
-    private static function _initYaf()
+    private static function initYaf()
     {
         $app = new Yaf_Application(CONF_PATH."/application.ini");
         return true;
     }
 
     // 执行产品线的auto_prepend
-    private static function _doProductPrepend()
+    private static function doProductPrepend()
     {
-        if (file_exists(APP_PATH."/auto_prepend.php")) {
+        if(file_exists(APP_PATH."/auto_prepend.php"))
+        {
             include_once APP_PATH."/auto_prepend.php";
         }
     }
 
-    private static function _initLog()
+    private static function initLog()
     {
         // 初始化日志库，仅为兼容老代码
         define('CLIENT_IP', Bd_Ip::getClientIp());
 
         //获取LogId
-        if (!defined('LOG_ID')) {
+        if(!defined('LOG_ID'))
+        {
             Bd_Log::genLogID();
         }
         //获取userip
@@ -110,17 +137,24 @@ class Rdp_Init
         //获取上一个经过的服务器
         define('FRONTEND_IP', Bd_Ip::getFrontendIp());
         //获取Product
-        if (getenv('HTTP_X_BD_PRODUCT')) {
+        if(getenv('HTTP_X_BD_PRODUCT'))
+        {
             define('PRODUCT', trim(getenv('HTTP_X_BD_PRODUCT')));
-        } else {
+        }
+        else
+        {
             define('PRODUCT', 'ORP');
         }
         //获取subsys
-        if (getenv('HTTP_X_BD_SUBSYS')) {
+        if(getenv('HTTP_X_BD_SUBSYS'))
+        {
             define('SUBSYS', trim(getenv('HTTP_X_BD_SUBSYS')));
-        } else {
+        }
+        else
+        {
             define('SUBSYS', 'ORP');
         }
         define("MODULE", APP);
     }
 }
+

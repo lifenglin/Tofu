@@ -1,7 +1,32 @@
 <?php
+/**
+ * Rdp_Entity
+ *
+ * PHP version 5
+ *
+ * @category  PHP
+ * @package   Rdp
+ * @author    lifenglin <lifenglin1987@gmail.com>
+ * @copyright 2013 lifenglin
+ * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @version   SVN: <svn_id>
+ * @link      https://github.com/lifenglin/rdp
+ */
+
+/**
+ * Rdp_Entity
+ *
+ * @category  PHP
+ * @package   Rdp
+ * @author    lifenglin <lifenglin1987@gmail.com>
+ * @copyright 2013 lifenglin1987@gmail.com
+ * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @version   Release: <package_version>
+ * @link      https://github.com/lifenglin/rdp
+ */
 class Rdp_Entity extends Rdp_Core
 {
-    static public function getEntity($strType, $strValue = null)
+    static public function getEntity($strType, $strValue = NULL)
     {
         $intPos = strpos($strType, '_');
         $strNamespace = substr($strType, 0, $intPos);

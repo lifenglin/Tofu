@@ -1,12 +1,33 @@
 <?php
+/**
+ * Rdp_Controller_Abstract
+ *
+ * PHP version 5
+ *
+ * @category  PHP
+ * @package   Rdp
+ * @author    lifenglin <lifenglin1987@gmail.com>
+ * @copyright 2013 lifenglin
+ * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @version   SVN: <svn_id>
+ * @link      https://github.com/lifenglin/rdp
+ */
+
+/**
+ * Rdp_Controller_Abstract
+ *
+ * @category  PHP
+ * @package   Rdp
+ * @author    lifenglin <lifenglin1987@gmail.com>
+ * @copyright 2013 lifenglin1987@gmail.com
+ * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @version   Release: <package_version>
+ * @link      https://github.com/lifenglin/rdp
+ */
 class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
 {
+    protected $_arrResponse = array('errno' => 0, 'data' => array());
     protected $arrResponse = array();
-
-    private $_arrResponse = array('errno' => 0, 'data' => array());
-    private $_objActionConfig;
-    private $_strResponseFormat;
-    private $_arrRequest;
 
     public function init()
     {
@@ -87,7 +108,7 @@ class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
             $this->_setResponseParam($arrConfig['type'], $strParamName, $mixParam);
         }
     }
-    private function _getRequestParam($strType, $strParamName, $strDefaultParam = null)
+    private function _getRequestParam($strType, $strParamName, $strDefaultParam = NULL)
     {
         $strParam = $this->getRequest()->getParam($strParamName, $strDefaultParam);
         return Rdp_Entity::getEntity($strType, $strParam)->getValue();
@@ -103,7 +124,7 @@ class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
         } else {
         }
     }
-    private function _setResponseParam($strType, $strParamName, $mixParam = null)
+    private function _setResponseParam($strType, $strParamName, $mixParam = NULL)
     {
         if ($mixParam instanceof Rdp_Entity) {
             $mixParam = $mixParam->toArray();
