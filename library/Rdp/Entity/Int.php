@@ -28,17 +28,33 @@ class Rdp_Entity_Int extends Rdp_Entity_Abstract
 {
     protected $strType = 'int';
 
-    protected function input($strValue)
+    /**
+     * input 
+     * 
+     * @param int $intValue 实体值
+     *
+     * @access protected
+     * @return int intValue
+     */
+    protected function input($intValue)
     {
-        if (!is_int($strValue) ? (ctype_digit($strValue)) : true) {
-            return $strValue;
+        if (!is_int($intValue) ? (ctype_digit($intValue)) : true) {
+            return $intValue;
         } else {
             return false;
         }
     }
 
-    protected function output($strValue)
+    /**
+     * output 
+     * 
+     * @param int $intValue 实体值
+     *
+     * @access protected
+     * @return int intValue
+     */
+    protected function output($intValue)
     {
-        return intval($strValue);
+        return intval($intValue);
     }
 }

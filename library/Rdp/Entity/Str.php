@@ -26,9 +26,17 @@
  */
 class Rdp_Entity_Str extends Rdp_Entity_Abstract
 {
-    protected $strType = 'str';
+    protected $strType      = 'str';
     protected $intMaxLength = 1024;
 
+    /**
+     * input 
+     * 
+     * @param str $strValue 实体值
+     *
+     * @access protected
+     * @return void
+     */
     protected function input($strValue)
     {
         if ($this->intMaxLength < strlen($strValue)) {
@@ -37,6 +45,14 @@ class Rdp_Entity_Str extends Rdp_Entity_Abstract
         return $strValue;
     }
 
+    /**
+     * output 
+     * 
+     * @param str $strValue 实体值
+     *
+     * @access protected
+     * @return void
+     */
     protected function output($strValue)
     {
         return strval($strValue);

@@ -26,20 +26,23 @@
  */
 class Rdp_Entity extends Rdp_Core
 {
-    static public function getEntity($strType, $strValue = NULL)
+    /**
+     * get a Rdp_Entity object.
+     *
+     * @param str $strType  实体类型
+     * @param str $strValue 实体初始化放入的值
+     *
+     * @return obj $objEntity 实体对象
+     */
+    static public function getEntity($strType, $strValue = null)
     {
-        $intPos = strpos($strType, '_');
+        $intPos       = strpos($strType, '_');
         $strNamespace = substr($strType, 0, $intPos);
-        if (strlen($strNamespace) && in_array($strNamespace, Yaf_Registry::get('app_namespace'))) {
+        if (strlen($strNamespace) && in_array($strNamespace, 
+                    Yaf_Registry::get('app_namespace'))) {
             $strClassName = $strType;
-            /*
-            $arrType = explode('_', $strType);
-            foreach ($arrType as $strVal) {
-                $strClassName .= '_' . ucwords($strVal);
-            }
-            */
         } else {
-            $strType = ucwords($strType);
+            $strType      = ucwords($strType);
             $strClassName = "Rdp_Entity_{$strType}";
         }
         $objEntity = new $strClassName($strValue);
