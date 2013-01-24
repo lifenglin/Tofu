@@ -1,30 +1,30 @@
 <?php
 /**
- * Rdp_Controller_Abstract
+ * Tofu_Controller_Abstract
  *
  * PHP version 5
  *
  * @category  PHP
- * @package   Rdp
+ * @package   Tofu
  * @author    lifenglin <lifenglin1987@gmail.com>
  * @copyright 2013 lifenglin
- * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @license   https://github.com/lifenglin/Tofu BSD Licence
  * @version   SVN: <svn_id>
- * @link      https://github.com/lifenglin/rdp
+ * @link      https://github.com/lifenglin/Tofu
  */
 
 /**
- * Rdp_Controller_Abstract
+ * Tofu_Controller_Abstract
  *
  * @category  PHP
- * @package   Rdp
+ * @package   Tofu
  * @author    lifenglin <lifenglin1987@gmail.com>
  * @copyright 2013 lifenglin1987@gmail.com
- * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @license   https://github.com/lifenglin/Tofu BSD Licence
  * @version   Release: <package_version>
- * @link      https://github.com/lifenglin/rdp
+ * @link      https://github.com/lifenglin/Tofu
  */
-class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
+class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
 {
     private  $_arrResponse = array('errno' => 0, 'data' => array());
     protected $arrResponse = array();
@@ -120,7 +120,7 @@ class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
         if (in_array($this->getRequest()->getMethod(), 
                     unserialize($this->_objActionConfig->method))) {
         } else {
-            throw new Rdp_Exception();
+            throw new Tofu_Exception();
         }
     }
 
@@ -144,7 +144,7 @@ class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
                 $strTemp .= sprintf("%s=%s", $strKey, $strVal);
             }
             if ($strSign !== md5($strTemp)) {
-                throw new Rdp_Exception();
+                throw new Tofu_Exception();
             }
         }
         return true;
@@ -186,13 +186,13 @@ class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
      * @param str $strDefaultParam 默认参数值
      *
      * @access private
-     * @return obj Rdp_Entity
+     * @return obj Tofu_Entity
      */
     private function _getRequestParam($strType, $strParamName, 
             $strDefaultParam = null)
     {
         $strParam = $this->getRequest()->getParam($strParamName, $strDefaultParam);
-        return Rdp_Entity::getEntity($strType, $strParam)->getValue();
+        return Tofu_Entity::getEntity($strType, $strParam)->getValue();
     }
 
     /**
@@ -225,10 +225,10 @@ class Rdp_Controller_Abstract extends Yaf_Controller_Abstract
      */
     private function _setResponseParam($strType, $strParamName, $mixParam = null)
     {
-        if ($mixParam instanceof Rdp_Entity) {
+        if ($mixParam instanceof Tofu_Entity) {
             $mixParam = $mixParam->toArray();
         } else {
-            $mixParam = Rdp_Entity::getEntity($strType, $mixParam)->getValue();
+            $mixParam = Tofu_Entity::getEntity($strType, $mixParam)->getValue();
         }
         $this->_arrResponse['data'][$strParamName] = $mixParam;
     }

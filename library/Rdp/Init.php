@@ -1,30 +1,30 @@
 <?php
 /**
- * Rdp_Init
+ * Tofu_Init
  *
  * PHP version 5
  *
  * @category  PHP
- * @package   Rdp
+ * @package   Tofu
  * @author    lifenglin <lifenglin1987@gmail.com>
  * @copyright 2013 lifenglin
- * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @license   https://github.com/lifenglin/Tofu BSD Licence
  * @version   SVN: <svn_id>
- * @link      https://github.com/lifenglin/rdp
+ * @link      https://github.com/lifenglin/Tofu
  */
 
 /**
- * Rdp_Init 
+ * Tofu_Init 
  *
  * @category  PHP
- * @package   Rdp
+ * @package   Tofu
  * @author    lifenglin <lifenglin1987@gmail.com>
  * @copyright 2013 lifenglin1987@gmail.com
- * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @license   https://github.com/lifenglin/Tofu BSD Licence
  * @version   Release: <package_version>
- * @link      https://github.com/lifenglin/rdp
+ * @link      https://github.com/lifenglin/Tofu
  */
-class Rdp_Init
+class Tofu_Init
 {
     static private $_isInit = false;
 

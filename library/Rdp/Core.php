@@ -1,35 +1,35 @@
 <?php
 /**
- * Rdp_Core 
+ * Tofu_Core 
  *
  * PHP version 5
  *
  * @category  PHP
- * @package   Rdp
+ * @package   Tofu
  * @author    lifenglin <lifenglin1987@gmail.com>
  * @copyright 2013 lifenglin
- * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @license   https://github.com/lifenglin/Tofu BSD Licence
  * @version   SVN: <svn_id>
- * @link      https://github.com/lifenglin/rdp
+ * @link      https://github.com/lifenglin/Tofu
  */
 
 /**
- * Rdp_Core 
+ * Tofu_Core 
  *
  * @category  PHP
- * @package   Rdp
+ * @package   Tofu
  * @author    lifenglin <lifenglin1987@gmail.com>
  * @copyright 2013 lifenglin1987@gmail.com
- * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @license   https://github.com/lifenglin/Tofu BSD Licence
  * @version   Release: <package_version>
- * @link      https://github.com/lifenglin/rdp
+ * @link      https://github.com/lifenglin/Tofu
  */
-class Rdp_Core
+class Tofu_Core
 {
     static protected $objSelf;
 
     /**
-     * Constructs a Rdp_Core object.
+     * Constructs a Tofu_Core object.
      *
      * @see process()
      */
@@ -44,7 +44,7 @@ class Rdp_Core
         }
     }
     /**
-     * get a Rdp_Core instance.
+     * get a Tofu_Core instance.
      *
      * @see process()
      * @return object

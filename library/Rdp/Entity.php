@@ -1,33 +1,33 @@
 <?php
 /**
- * Rdp_Entity
+ * Tofu_Entity
  *
  * PHP version 5
  *
  * @category  PHP
- * @package   Rdp
+ * @package   Tofu
  * @author    lifenglin <lifenglin1987@gmail.com>
  * @copyright 2013 lifenglin
- * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @license   https://github.com/lifenglin/Tofu BSD Licence
  * @version   SVN: <svn_id>
- * @link      https://github.com/lifenglin/rdp
+ * @link      https://github.com/lifenglin/Tofu
  */
 
 /**
- * Rdp_Entity
+ * Tofu_Entity
  *
  * @category  PHP
- * @package   Rdp
+ * @package   Tofu
  * @author    lifenglin <lifenglin1987@gmail.com>
  * @copyright 2013 lifenglin1987@gmail.com
- * @license   https://github.com/lifenglin/rdp BSD Licence
+ * @license   https://github.com/lifenglin/Tofu BSD Licence
  * @version   Release: <package_version>
- * @link      https://github.com/lifenglin/rdp
+ * @link      https://github.com/lifenglin/Tofu
  */
-class Rdp_Entity extends Rdp_Core
+class Tofu_Entity extends Tofu_Core
 {
     /**
-     * get a Rdp_Entity object.
+     * get a Tofu_Entity object.
      *
      * @param str $strType  实体类型
      * @param str $strValue 实体初始化放入的值
@@ -43,7 +43,7 @@ class Rdp_Entity extends Rdp_Core
             $strClassName = $strType;
         } else {
             $strType      = ucwords($strType);
-            $strClassName = "Rdp_Entity_{$strType}";
+            $strClassName = "Tofu_Entity_{$strType}";
         }
         $objEntity = new $strClassName($strValue);
         return $objEntity;

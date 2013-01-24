@@ -1,5 +1,5 @@
 <?php
-class TestController extends Rdp_Controller_Abstract
+class TestController extends Tofu_Controller_Abstract
 {
     public function indexAction()
     {
