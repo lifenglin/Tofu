@@ -28,6 +28,8 @@ class Tofu_Entity_Abstract extends Tofu_Core
 {
     protected $strValue = null;
     protected $strType  = null;
+    protected $intLength;
+    protected $strExtra;
 
     //abstract protected function input($strValue);
 
@@ -52,8 +54,10 @@ class Tofu_Entity_Abstract extends Tofu_Core
      * @access public
      * @return void
      */
-    public function construct($strValue)
+    public function construct($strValue, $intLength, $strExtra)
     {
+        $this->intLength = $intLength;
+        $this->strExtra  = $strExtra;
         $strValue !== null && $this->setValue($strValue);
     }
 

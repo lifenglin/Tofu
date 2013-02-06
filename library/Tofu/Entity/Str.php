@@ -26,8 +26,7 @@
  */
 class Tofu_Entity_Str extends Tofu_Entity_Abstract
 {
-    protected $strType      = 'str';
-    protected $intMaxLength = 1024;
+    protected $strType = 'str';
 
     /**
      * input 
@@ -39,7 +38,7 @@ class Tofu_Entity_Str extends Tofu_Entity_Abstract
      */
     protected function input($strValue)
     {
-        if ($this->intMaxLength < strlen($strValue)) {
+        if ($this->intLength < mb_strlen($strValue)) {
             return false;
         }
         return $strValue;

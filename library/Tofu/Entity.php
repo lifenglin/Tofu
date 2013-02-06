@@ -34,7 +34,7 @@ class Tofu_Entity extends Tofu_Core
      *
      * @return obj $objEntity 实体对象
      */
-    static public function getEntity($strType, $strValue = null)
+    static public function getEntity($strType, $strValue = null, $intLength = 1024, $strExtra = null)
     {
         $intPos       = strpos($strType, '_');
         $strNamespace = substr($strType, 0, $intPos);
@@ -45,7 +45,7 @@ class Tofu_Entity extends Tofu_Core
             $strType      = ucwords($strType);
             $strClassName = "Tofu_Entity_{$strType}";
         }
-        $objEntity = new $strClassName($strValue);
+        $objEntity = new $strClassName($strValue, $intLength, $strExtra);
         return $objEntity;
     }
 }

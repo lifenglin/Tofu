@@ -12,12 +12,12 @@ if (!is_writeable($strOutputFilepath)) {
     mkdir($strOutputFilepath);
 }
 $strFilepath = $argv[1];
-$arrInterfaceConfig = array('module', 'controller', 'action', 'method', 'output_format', 'inoutput', 'param_name', 'is_required', 'alow_null');
-$arrParamsDictionary = array('param_name', 'param_chinese_name', 'param_type', 'default', 'length', 'extra', 'remarks');
-$arrWorksheets = array('interface_config' => $arrInterfaceConfig, 'params_dictionary' => $arrParamsDictionary);
+$arrUiConfig = array('module', 'controller', 'action', 'method', 'response_format', 'req/res', 'param_name', 'is_required', 'allow_empty', 'default');
+$arrParamsDictionary = array('param_name', 'param_chinese_name', 'param_type', 'length', 'extra', 'remarks');
+$arrWorksheets = array('ui_config' => $arrUiConfig, 'params_dictionary' => $arrParamsDictionary);
 $arrConf = excel2conf($strFilepath, $arrWorksheets);
 foreach ($arrConf as $strFileName => $strContents) {
-    file_put_contents($strOutputFilepath . $strFileName, $strContents);
+    file_put_contents($strOutputFilepath . $strFileName . '.ini', $strContents);
 }
 
 function excel2conf($strFilepath, $arrWorksheets)
@@ -42,7 +42,6 @@ function build_params_dictionary($arrExcelConfig)
         $strParamName        = $arrConfig['param_name'];
         $strParamChineseName = $arrConfig['param_chinese_name'];
         $strParamType        = $arrConfig['param_type'];
-        $mixDefault = $arrConfig['default'];
         $intLength = $arrConfig['length'];
         $strExtra = $arrConfig['extra'];
         $strRemarks = $arrConfig['remarks'];
@@ -50,7 +49,6 @@ function build_params_dictionary($arrExcelConfig)
         $arrConfigContents[$strTag] = array(
                 'param_chinese_name' => $strParamChineseName,
                 'param_type' => $strParamType,
-                'default' => $mixDefault,
                 'length' => $intLength,
                 'extra' => $strExtra,
                 'remarks' => $strRemarks,
@@ -58,7 +56,7 @@ function build_params_dictionary($arrExcelConfig)
     }
     return arrContents2strContens($arrConfigContents);
 }
-function build_interface_config($arrExcelConfig)
+function build_ui_config($arrExcelConfig)
 {
     $strConfigContents  = '';
     $strModule          = NULL;
@@ -87,24 +85,26 @@ function build_interface_config($arrExcelConfig)
         if (NULL != $arrConfig['method']) {
             $arrConfigContents[$strTag]['method'] = $arrConfig['method'];
         }
-        if (NULL != $arrConfig['output_format']) {
-            $arrConfigContents[$strTag]['output_format'] = $arrConfig['output_format'];
+        if (NULL != $arrConfig['response_format']) {
+            $arrConfigContents[$strTag]['response_format'] = $arrConfig['response_format'];
         }
-        if (NULL != $arrConfig['inoutput']) {
-            $strInoutput = $arrConfig['inoutput'];
+        if (NULL != $arrConfig['req/res']) {
+            $strReqRes = $arrConfig['req/res'];
         }
-        if (empty($strInoutput)) {
+        if (empty($strReqRes)) {
             die('输入输出有问题');
         }
         $bolIsRequired = $arrConfig['is_required'] === 'Yes' ? true : false;
-        $bolAlowNull = $arrConfig['alow_null'] === 'Yes' ? true : false;
-        $arrConfigContents[$strTag][$strInoutput][] = array(
-                'param_name' => $arrConfig['param_name'],
+        $bolAllowEmpty = $arrConfig['allow_empty'] === 'Yes' ? true : false;
+        $mixDefault    = $arrConfig['default'];
+        $arrConfigContents[$strTag][$strReqRes][] = array(
+                'param_name'  => $arrConfig['param_name'],
                 'is_required' => $bolIsRequired,
-                'alow_null' => $bolAlowNull,
+                'allow_empty' => $bolAllowEmpty,
+                'default'     => $mixDefault,
                 );
-        return arrContents2strContens($arrConfigContents);
     }
+    return arrContents2strContens($arrConfigContents);
     
 }
 function arrContents2strContens($arrConfigContents)
@@ -125,14 +125,16 @@ function arrContents2strContens($arrConfigContents)
 }
 function compareExcelAndWorksheets($arrExcel, $arrWorksheets)
 {
-    $arrWorksheetsDiff = array_diff(array_keys($arrExcel), array_keys($arrWorksheets));
-    if (!empty($arrWorksheetDiff)) {
+    $arrWorksheetsDiff1 = array_diff(array_keys($arrExcel), array_keys($arrWorksheets));
+    $arrWorksheetsDiff2 = array_diff(array_keys($arrWorksheets), array_keys($arrExcel));
+    if (!empty($arrWorksheetsDiff1) || !empty($arrWorksheetsDiff2)) {
         die('工作簿有问题');
     }
     foreach ($arrWorksheets as $strWorksheet => $arrWorksheet) {
         $intRandKey = array_rand($arrExcel[$strWorksheet]);
-        $arrWorksheetDiff = array_diff(array_values($arrWorksheet), array_keys($arrExcel[$strWorksheet][$intRandKey]));
-        if (!empty($arrWorksheetDiff)) {
+        $arrWorksheetDiff1 = array_diff(array_values($arrWorksheet), array_keys($arrExcel[$strWorksheet][$intRandKey]));
+        $arrWorksheetDiff2 = array_diff(array_keys($arrExcel[$strWorksheet][$intRandKey]), array_values($arrWorksheet));
+        if (!empty($arrWorksheetDiff1) || !empty($arrWorksheetDiff2)) {
             die('工作簿内列有问题');
         }
     }

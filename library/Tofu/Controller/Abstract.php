@@ -28,97 +28,115 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
 {
     private  $_arrResponse = array('errno' => 0, 'data' => array());
     protected $arrResponse = array();
+    private $_objUiConfig;
 
     /**
      * init 
-     * 
+     * 1、检查ui配置
+     * 2、初始化请求参数
+     * 3、初始化相应格式
+     * 出现错误时，设置请求错误error code，抛出异常
      * @access public
      * @return void
      */
     public function init()
     {
-        $this->_initActionConfig();
-        $this->_check();
-        $this->_initRequestParams();
-        $this->_initResponseFormat();
+        try {
+            $this->_initUiConfig();
+            $this->_check();
+            $this->_initRequestParams();
+            $this->_initResponseFormat();
+        } catch (Exception $e) {
+            //error code
+            throw new Tofu_Exception();
+        }
     }
 
     /**
-     * _initActionConfig 
-     * 
+     * _initUiConfig 
+     * 1、根据模块、控制器、action组成flag
+     * 2、用flag寻找需要的配置
      * @access private
-     * @return void
+     * @return bool
      */
-    private function _initActionConfig()
+    private function _initUiConfig()
     {
-        $strModuleName          = $this->getRequest()->getModuleName();
-        $strControllerName      = $this->getRequest()->getControllerName();
-        $strActionName          = $this->getRequest()->getActionName();
-        $strFlag                = 
+        $strModuleName     = strtolower($this->getRequest()->getModuleName());
+        $strControllerName = strtolower($this->getRequest()->getControllerName());
+        $strActionName     = strtolower($this->getRequest()->getActionName());
+        $strFlag           = 
             sprintf("%s.%s.%s", $strModuleName, $strControllerName, $strActionName);
-        $this->_objActionConfig = 
-            new Yaf_Config_Ini(CONF_PATH."/controllers.ini", $strFlag);
+        $this->_objUiConfig = 
+            new Yaf_Config_Ini(CONF_PATH."/ui_config.ini", $strFlag);
         return true;
     }
 
     /**
+     * _check 
+     * 检查请求方法、签名
+     * @access private
+     * @return void
+     */
+    private function _check()
+    {
+        return $this->_checkMethod() && $this->_checkSign();
+    }
+
+    /**
      * _initRequestParams 
-     * 
+     * 1、得到数据字典
+     * 2、从请求中得到参数，根据字典组装参数
      * @access private
      * @return void
      */
     private function _initRequestParams()
     {
-        $arrRequestConfig = unserialize($this->_objActionConfig->request);
-        foreach ($arrRequestConfig as $strParamName => $arrConfig) {
-            $this->_arrRequest[$strParamName] = 
-                $this->_getRequestParam($arrConfig['type'], 
-                        $strParamName, $arrConfig['default']);
+        $arrRequestConfig = unserialize($this->_objUiConfig->request);
+        $objDictionary = new Yaf_Config_Ini(CONF_PATH . '/params_dictionary.ini');
+        foreach ($arrRequestConfig as $arrConfig) {
+            $strParam = $this->getRequest()->getParam($arrConfig['param_name']);
+            if (null === $strParam && $arrConfig['is_required']) {
+                die('error');
+            }
+            if (!$arrConfig['allow_empty'] && empty($strParam)) {
+                $strParam = $arrConfig['default'];
+                if (empty($strParam)) {
+                    die('error');
+                }
+            }
+            $strType = $objDictionary[$arrConfig['param_name']]['param_type'];
+            $intLength = $objDictionary[$arrConfig['param_name']]['length'];
+            $strExtra = $objDictionary[$arrConfig['param_name']]['extra'];
+            $this->_arrRequest[$arrConfig['param_name']] = Tofu_Entity::getEntity($strType, $strParam, $intLength, $strExtra)->getValue();
         }
         return true;
     }
 
     /**
      * _initResponseFormat 
-     * 
+     * 1、从请求中取出format参数
+     * 2、优先使用请求中format，其次为配置的format
      * @access private
      * @return void
      */
     private function _initResponseFormat()
     {
-        $arrResponseFormat        = 
-            unserialize($this->_objActionConfig->responseFormat);
-        $this->_strResponseFormat = $arrResponseFormat[0];
-        if (in_array($this->getRequest()->getParam('format'), $arrResponseFormat)) {
-            $this->_strRepsonseFormat = $this->getRequest()->getParam('format');
-        }
+        $this->_strResponseFormat = $this->getRequest()->getParam('format') ? : $this->_objUiConfig->response_format;
         if ($this->_strResponseFormat !== 'html') {
             Yaf_Dispatcher::getInstance()->disableView();
         }
     }
 
     /**
-     * _check 
-     * 
-     * @access private
-     * @return void
-     */
-    private function _check()
-    {
-        $this->_checkMethod();
-        $this->_checkSign();
-    }
-
-    /**
      * _checkMethod 
-     * 
+     * 检查本次请求的method是否在配置中
      * @access private
      * @return void
      */
     private function _checkMethod()
     {
-        if (in_array($this->getRequest()->getMethod(), 
-                    unserialize($this->_objActionConfig->method))) {
+        if (false !== strpos($this->_objUiConfig->method, $this->getRequest()->getMethod(), 0)) {
+            return true;
         } else {
             throw new Tofu_Exception();
         }
@@ -132,7 +150,8 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      */
     private function _checkSign()
     {
-        if ($strTemp = $this->_objActionConfig->sign) {
+        /*
+        if ($strTemp = $this->_objUiConfig->sign) {
             $arrParams = $this->getRequest()->getParams();
             $strSign   = strtolower($arrParams['sign']);
             if ($strSign == 'ohmygod') {
@@ -147,6 +166,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
                 throw new Tofu_Exception();
             }
         }
+        */
         return true;
     }
 
@@ -170,29 +190,12 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      */
     private function _initResponseParams()
     {
-        $arrResponseConfig = unserialize($this->_objActionConfig->response);
+        $arrResponseConfig = unserialize($this->_objUiConfig->response);
         foreach ($arrResponseConfig as $strParamName => $arrConfig) {
             $mixParam = isset($this->arrResponse[$strParamName]) ? 
                 $this->arrResponse[$strParamName] : $arrConfig['default'];
             $this->_setResponseParam($arrConfig['type'], $strParamName, $mixParam);
         }
-    }
-
-    /**
-     * _getRequestParam 
-     * 
-     * @param str $strType         输入参数类型
-     * @param str $strParamName    输入参数名
-     * @param str $strDefaultParam 默认参数值
-     *
-     * @access private
-     * @return obj Tofu_Entity
-     */
-    private function _getRequestParam($strType, $strParamName, 
-            $strDefaultParam = null)
-    {
-        $strParam = $this->getRequest()->getParam($strParamName, $strDefaultParam);
-        return Tofu_Entity::getEntity($strType, $strParam)->getValue();
     }
 
     /**
