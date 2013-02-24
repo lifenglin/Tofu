@@ -121,7 +121,8 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      */
     private function _initResponseFormat()
     {
-        $this->_strResponseFormat = $this->getRequest()->getParam('format') ? : $this->_objUiConfig->response_format;
+        $strFormat = $this->getRequest()->getParam('format');
+        $this->_strResponseFormat = $strFormat ? $strFormat : $this->_objUiConfig->response_format;
         if ($this->_strResponseFormat !== 'html') {
             Yaf_Dispatcher::getInstance()->disableView();
         }
