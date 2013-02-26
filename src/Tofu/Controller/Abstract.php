@@ -26,7 +26,7 @@
  */
 class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
 {
-    private  $_arrResponse = array('errno' => 0, 'data' => array());
+    private  $_arrResponse;
     protected $arrResponse = array();
     private $_objUiConfig;
 
@@ -43,6 +43,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
     public function init()
     {
         try {
+            $this->error();
             $this->_initUiConfig();
             $this->_check();
             $this->_initRequestParams();
@@ -51,6 +52,21 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
             //error code
             throw new Tofu_Exception();
         }
+    }
+
+    /**
+     * error 
+     * 
+     * @param int $intNo 
+     *
+     * @access protected
+     * @return void
+     */
+    protected function error($intNo = 0)
+    {
+        //todo:读取错误配置
+        $arrError = array();
+        $this->_arrResponse['error'] = Tofu_Error::getInstance($arrError)->getError($intNo);
     }
 
     /**
@@ -63,13 +79,11 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      */
     private function _initUiConfig()
     {
-        $strModuleName     = strtolower($this->getRequest()->getModuleName());
-        $strControllerName = strtolower($this->getRequest()->getControllerName());
-        $strActionName     = strtolower($this->getRequest()->getActionName());
-        $strFlag           = 
-            sprintf("%s.%s.%s", $strModuleName, $strControllerName, $strActionName);
-        $this->_objUiConfig = 
-            new Yaf_Config_Ini(CONF_PATH."/ui_config.ini", $strFlag);
+        $strModuleName      = strtolower($this->getRequest()->getModuleName());
+        $strControllerName  = strtolower($this->getRequest()->getControllerName());
+        $strActionName      = strtolower($this->getRequest()->getActionName());
+        $strFlag            = sprintf("%s.%s.%s", $strModuleName, $strControllerName, $strActionName);
+        $this->_objUiConfig = new Yaf_Config_Ini(CONF_PATH."/ui_config.ini", $strFlag);
         return true;
     }
 
@@ -199,8 +213,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
     {
         $arrResponseConfig = unserialize($this->_objUiConfig->response);
         foreach ($arrResponseConfig as $strParamName => $arrConfig) {
-            $mixParam = isset($this->arrResponse[$strParamName]) ? 
-                $this->arrResponse[$strParamName] : $arrConfig['default'];
+            $mixParam = isset($this->arrResponse[$strParamName]) ? $this->arrResponse[$strParamName] : $arrConfig['default'];
             $this->_setResponseParam($arrConfig['type'], $strParamName, $mixParam);
         }
     }
