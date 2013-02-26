@@ -50,6 +50,8 @@ class Tofu_Entity_Abstract extends Tofu_Core
      * construct 
      * 
      * @param str $strValue 实体值
+     * @param str $intLength 长度
+     * @param str $strExtra 额外
      *
      * @access public
      * @return void

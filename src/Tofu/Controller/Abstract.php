@@ -36,6 +36,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      * 2、初始化请求参数
      * 3、初始化相应格式
      * 出现错误时，设置请求错误error code，抛出异常
+     *
      * @access public
      * @return void
      */
@@ -56,6 +57,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      * _initUiConfig 
      * 1、根据模块、控制器、action组成flag
      * 2、用flag寻找需要的配置
+     *
      * @access private
      * @return bool
      */
@@ -74,6 +76,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
     /**
      * _check 
      * 检查请求方法、签名
+     *
      * @access private
      * @return void
      */
@@ -86,6 +89,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      * _initRequestParams 
      * 1、得到数据字典
      * 2、从请求中得到参数，根据字典组装参数
+     *
      * @access private
      * @return void
      */
@@ -116,6 +120,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      * _initResponseFormat 
      * 1、从请求中取出format参数
      * 2、优先使用请求中format，其次为配置的format
+     *
      * @access private
      * @return void
      */
@@ -131,6 +136,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
     /**
      * _checkMethod 
      * 检查本次请求的method是否在配置中
+     *
      * @access private
      * @return void
      */
