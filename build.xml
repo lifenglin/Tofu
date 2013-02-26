@@ -2,7 +2,7 @@
 
 <project name="name-of-project" default="build">
 <target name="build"
-depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpcb"/>
+depends="prepare,lint,phploc,pdepend,phpmd,phpcs-ci,phpcpd,phpcb"/>
 <!-- depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpunit,phpcb"/> --> 
 
 <target name="build-parallel"
