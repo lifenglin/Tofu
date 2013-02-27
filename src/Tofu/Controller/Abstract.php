@@ -44,9 +44,9 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
     {
         try {
             $this->error();
-            $this->_initUiConfig();
+            $this->_initActionConfig();
             $this->_check();
-            $this->_initRequestParams();
+            $this->_initRequest();
             $this->_initResponseFormat();
         } catch (Exception $e) {
             //error code
@@ -77,7 +77,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      * @access private
      * @return bool
      */
-    private function _initUiConfig()
+    private function _initActionConfig()
     {
         $strModuleName      = strtolower($this->getRequest()->getModuleName());
         $strControllerName  = strtolower($this->getRequest()->getControllerName());
@@ -100,14 +100,14 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
     }
 
     /**
-     * _initRequestParams 
+     * _initRequest
      * 1、得到数据字典
      * 2、从请求中得到参数，根据字典组装参数
      *
      * @access private
      * @return void
      */
-    private function _initRequestParams()
+    private function _initRequest()
     {
         $arrRequestConfig = unserialize($this->_objUiConfig->request);
         $objDictionary = new Yaf_Config_Ini(CONF_PATH . '/params_dictionary.ini');
@@ -199,17 +199,17 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      */
     public function end()
     {
-        $this->_initResponseParams();
+        $this->_initResponse();
         $this->_setBody();
     }
 
     /**
-     * _initResponseParams 
+     * _initResponse
      * 
      * @access private
      * @return void
      */
-    private function _initResponseParams()
+    private function _initResponse()
     {
         $arrResponseConfig = unserialize($this->_objUiConfig->response);
         foreach ($arrResponseConfig as $strParamName => $arrConfig) {
