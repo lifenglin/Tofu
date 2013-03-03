@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="name-of-project" default="build">
+<project name="Tofu" default="build">
 <target name="build"
-depends="prepare,lint,phploc,pdepend,phpmd,phpcs-ci,phpcpd,phpdox,phpcb"/>
+depends="prepare,lint,phploc,pdepend,phpmd,phpcs-ci,phpcpd,phpdox,phpcb,deploy"/>
 <!-- depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpunit,phpcb"/> --> 
 
 <target name="build-parallel"
@@ -132,5 +132,15 @@ description="Find coding standard violations using PHP_CodeSniffer and print hum
 <arg path="${basedir}/build/code-browser" />
 </exec>
 </target>
-</project>
 
+<target name="deploy" description="deploy the project">
+<mkdir dir="${build.deploy_path}"/>
+<exec executable="ln">
+<arg value="-s" />
+<arg path="${basedir}/src/${ant.project.name}" />
+<arg path="${build.deploy_path}/${ant.project.name}" />
+</exec>
+</target>
+
+</target>
+</project>

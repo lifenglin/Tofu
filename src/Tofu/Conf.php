@@ -1,5 +1,5 @@
 <?php
-class Tofu_Conf extends Tofu_Core
+abstract class Tofu_Conf extends Tofu_Core
 {
     protected $objConf = '';
     abstract protected function getConfPath();
