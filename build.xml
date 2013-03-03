@@ -142,5 +142,4 @@ description="Find coding standard violations using PHP_CodeSniffer and print hum
 </exec>
 </target>
 
-</target>
 </project>
