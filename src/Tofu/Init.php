@@ -44,6 +44,9 @@ class Tofu_Init
         // 初始化Ap框架
         self::initYaf();
 
+        //初始化错误捕捉
+        self::initHandler();
+
         // 初始化日志库
         //self::initLog($app_name);
 
@@ -119,6 +122,13 @@ class Tofu_Init
         {
             include_once APP_PATH."/auto_prepend.php";
         }
+    }
+
+    private static function initHandler()
+    {
+        set_error_handler('Tofu_Log', 'errorHandler');
+        set_exception_handler('Tofu_Log', 'exceptionHandler');
+        register_shutdown_function('Tofu_Log', 'shutdownErrorHandler');
     }
 
     private static function initLog()
