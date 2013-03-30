@@ -45,7 +45,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
     {
         try {
             $this->_initActionConfig();
-            //$this->_check();
+            $this->_check();
             $this->_initRequest();
             $this->_initResponseFormat();
             /*
@@ -275,7 +275,6 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      * @access private
      * @return void
      */
-    /*
     private function _setResponseParam($strType, $strParamName, $mixParam = null)
     {
         if ($mixParam instanceof Tofu_Entity) {
@@ -285,5 +284,4 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
         }
         $this->_arrResponse['data'][$strParamName] = $mixParam;
     }
-    */
 }

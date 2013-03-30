@@ -24,7 +24,7 @@
  * @version   Release: <package_version>
  * @link      https://github.com/lifenglin/Tofu
  */
-class Tofu_Params_Entity_Abstract extends Tofu_Core
+class Tofu_Entity_Abstract extends Tofu_Core
 {
     protected $strValue = null;
     protected $strType  = null;

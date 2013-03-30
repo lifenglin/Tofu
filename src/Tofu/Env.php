@@ -1,0 +1,33 @@
+<?php
+class Tofu_Env extends Tofu_Core
+{
+    public function construct()
+    {
+        $this->_initBasicEnv();
+        $this->_initAppEnv();
+    }
+    
+    private function _initBasicEnv()
+    {
+        define("ENV_LOG_PATH", ENV_ROOT . "/log");
+    }
+
+    private function _initAppEnv()
+    {
+        define("APP_NAME", $this->_getAppName());
+        define("APP_LOG_PATH", ENV_LOG_PATH . '/' . APP_NAME);
+        define('APP_ERROR_LOG_PATH', APP_LOG_PATH . '.error.log');
+        define('APP_WARNING_LOG_PATH',  APP_LOG_PATH . '.warning.log');
+        define('APP_NOTICE_LOG_PATH', APP_LOG_PATH . '.notice.log');
+        define('APP_UNKNOWN_LOG_PATH', APP_LOG_PATH . '.unknown.log');
+        define('APP_EXCEPTION_LOG_PATH', APP_LOG_PATH . '.exception.log');
+        define('APP_MODULES_PATH', APP_PATH . '/application/modules');
+        define('APP_CONF_PATH', APP_PATH . '/conf');
+    }
+
+    private static function _getAppName()
+    {
+        $pos = strrpos(rtrim(APP_PATH, '/'), '/');
+        return trim(substr(APP_PATH, $pos), '/');
+    }
+}

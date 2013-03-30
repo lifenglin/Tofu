@@ -26,8 +26,7 @@
  */
 class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
 {
-    private   $_arrResponse;
-    protected $_arrRequest = array();
+    private  $_arrResponse;
     protected $arrResponse = array();
     private $_objUiConfig;
 
@@ -44,17 +43,14 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
     public function init()
     {
         try {
+            $this->error();
             $this->_initActionConfig();
-            //$this->_check();
+            $this->_check();
             $this->_initRequest();
             $this->_initResponseFormat();
-            /*
-            $this->error();
-            */
         } catch (Exception $e) {
             //error code
-            //var_dump($e);
-            //throw new Tofu_Exception();
+            throw new Tofu_Exception();
         }
     }
 
@@ -70,7 +66,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
     {
         //todo:读取错误配置
         $arrError = array();
-        //$this->_arrResponse['error'] = Tofu_Error::getInstance($arrError)->getError($intNo);
+        $this->_arrResponse['error'] = Tofu_Error::getInstance($arrError)->getError($intNo);
     }
 
     /**
@@ -87,7 +83,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
         $strControllerName  = strtolower($this->getRequest()->getControllerName());
         $strActionName      = strtolower($this->getRequest()->getActionName());
         $strFlag            = sprintf("%s.%s.%s", $strModuleName, $strControllerName, $strActionName);
-        $this->_objUiConfig = new Yaf_Config_Ini(APP_CONF_PATH . "/ui_config.ini", $strFlag);
+        $this->_objUiConfig = new Yaf_Config_Ini(CONF_PATH."/ui_config.ini", $strFlag);
         return true;
     }
 
@@ -114,25 +110,22 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
     private function _initRequest()
     {
         $arrRequestConfig = unserialize($this->_objUiConfig->request);
-        $objDictionary = new Yaf_Config_Ini(APP_CONF_PATH . '/params_dictionary.ini');
-        if (!is_array($arrRequestConfig)) {
-            return true;
-        }
-        foreach ($arrRequestConfig as $arrConfig) {            
+        $objDictionary = new Yaf_Config_Ini(CONF_PATH . '/params_dictionary.ini');
+        foreach ($arrRequestConfig as $arrConfig) {
             $strParam = $this->getRequest()->getParam($arrConfig['param_name']);
             if (null === $strParam && $arrConfig['is_required']) {
                 die('error');
-            }            
+            }
             if (!$arrConfig['allow_empty'] && empty($strParam)) {
                 $strParam = $arrConfig['default'];
-                if (empty($strParam)) {                    
+                if (empty($strParam)) {
                     die('error');
                 }
             }
             $strType = $objDictionary[$arrConfig['param_name']]['param_type'];
             $intLength = $objDictionary[$arrConfig['param_name']]['length'];
             $strExtra = $objDictionary[$arrConfig['param_name']]['extra'];
-            $this->_arrRequest[$arrConfig['param_name']] = Tofu_Params_Entity::getEntity($strType, $strParam, $intLength, $strExtra)->getValue();
+            $this->_arrRequest[$arrConfig['param_name']] = Tofu_Entity::getEntity($strType, $strParam, $intLength, $strExtra)->getValue();
         }
         return true;
     }
@@ -204,7 +197,7 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      * @access public
      * @return void
      */
-    public function __destruct()
+    public function end()
     {
         $this->_initResponse();
         $this->_setBody();
@@ -219,31 +212,9 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
     private function _initResponse()
     {
         $arrResponseConfig = unserialize($this->_objUiConfig->response);
-        if (!is_array($arrResponseConfig)) {
-            return true;
-        }
-        $objDictionary = new Yaf_Config_Ini(APP_CONF_PATH . '/params_dictionary.ini');
-        foreach ($arrResponseConfig as $arrConfig) {            
-            $mixParam = isset($this->arrResponse[$arrConfig['param_name']]) ? $this->arrResponse[$arrConfig['param_name']] : $arrConfig['default'];
-            if (null === $mixParam && $arrConfig['is_required']) {
-                die('error');
-            }            
-            if (!$arrConfig['allow_empty'] && empty($mixParam)) {
-                $mixParam = $arrConfig['default'];
-                if (empty($mixParam)) {                    
-                    die('error');
-                }
-            }
-            $strType = $objDictionary[$arrConfig['param_name']]['param_type'];
-            $intLength = $objDictionary[$arrConfig['param_name']]['length'];
-            $strExtra = $objDictionary[$arrConfig['param_name']]['extra'];
-            $this->_arrRequest[$arrConfig['param_name']] = Tofu_Params_Entity::getEntity($strType, $strParam, $intLength, $strExtra)->getValue();
-            $this->_setResponseParam($arrConfig['type'], $strParamName, $mixParam);
-        }
-        var_dump($arrResponseConfig);
-        exit;
         foreach ($arrResponseConfig as $strParamName => $arrConfig) {
-            var_dump($arrConfig['type'], $strParamName, $mixParam);
+            $mixParam = isset($this->arrResponse[$strParamName]) ? $this->arrResponse[$strParamName] : $arrConfig['default'];
+            $this->_setResponseParam($arrConfig['type'], $strParamName, $mixParam);
         }
     }
 
@@ -275,7 +246,6 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
      * @access private
      * @return void
      */
-    /*
     private function _setResponseParam($strType, $strParamName, $mixParam = null)
     {
         if ($mixParam instanceof Tofu_Entity) {
@@ -285,5 +255,4 @@ class Tofu_Controller_Abstract extends Yaf_Controller_Abstract
         }
         $this->_arrResponse['data'][$strParamName] = $mixParam;
     }
-    */
 }

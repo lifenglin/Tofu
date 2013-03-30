@@ -1,6 +1,6 @@
 <?php
 /**
- * Tofu_Entity_Int 
+ * Tofu_Entity_Str
  *
  * PHP version 5
  *
@@ -14,7 +14,7 @@
  */
 
 /**
- * Tofu_Entity_Int 
+ * Tofu_Entity_Str
  *
  * @category  PHP
  * @package   Tofu
@@ -24,37 +24,36 @@
  * @version   Release: <package_version>
  * @link      https://github.com/lifenglin/Tofu
  */
-class Tofu_Params_Entity_Int extends Tofu_Params_Entity_Abstract
+class Tofu_Entity_Str extends Tofu_Entity_Abstract
 {
-    protected $strType = 'int';
+    protected $strType = 'str';
 
     /**
      * input 
      * 
-     * @param int $intValue 实体值
+     * @param str $strValue 实体值
      *
      * @access protected
-     * @return int intValue
+     * @return void
      */
-    protected function input($intValue)
+    protected function input($strValue)
     {
-        if (!is_int($intValue) ? (ctype_digit($intValue)) : true) {
-            return $intValue;
-        } else {
+        if ($this->intLength < mb_strlen($strValue)) {
             return false;
         }
+        return $strValue;
     }
 
     /**
      * output 
      * 
-     * @param int $intValue 实体值
+     * @param str $strValue 实体值
      *
      * @access protected
-     * @return int intValue
+     * @return void
      */
-    protected function output($intValue)
+    protected function output($strValue)
     {
-        return intval($intValue);
+        return strval($strValue);
     }
 }

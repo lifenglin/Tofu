@@ -24,7 +24,7 @@
  * @version   Release: <package_version>
  * @link      https://github.com/lifenglin/Tofu
  */
-class Tofu_Params_Entity extends Tofu_Core
+class Tofu_Entity extends Tofu_Core
 {
     /**
      * get a Tofu_Entity object.
@@ -43,7 +43,7 @@ class Tofu_Params_Entity extends Tofu_Core
             $strClassName = $strType;
         } else {
             $strType      = ucwords($strType);
-            $strClassName = "Tofu_Params_Entity_{$strType}";
+            $strClassName = "Tofu_Entity_{$strType}";
         }
         $objEntity = new $strClassName($strValue, $intLength, $strExtra);
         return $objEntity;

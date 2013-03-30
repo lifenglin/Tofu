@@ -24,7 +24,7 @@
  * @version   Release: <package_version>
  * @link      https://github.com/lifenglin/Tofu
  */
-class Tofu_Entity_Str extends Tofu_Entity_Abstract
+class Tofu_Params_Entity_Str extends Tofu_Params_Entity_Abstract
 {
     protected $strType = 'str';
 
