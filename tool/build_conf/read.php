@@ -39,13 +39,20 @@ function build_params_dictionary($arrExcelConfig)
 {
     $strConfigContents  = '';
     foreach ($arrExcelConfig as $arrConfig) {
+        if (empty($arrConfig['param_name'])) {
+            continue;
+        }
         $strParamName        = $arrConfig['param_name'];
         $strParamChineseName = $arrConfig['param_chinese_name'];
         $strParamType        = $arrConfig['param_type'];
         $intLength = $arrConfig['length'];
-        $strExtra = $arrConfig['extra'];
         $strRemarks = $arrConfig['remarks'];
         $strTag = sprintf('[%s]', $strParamName);
+        if ('array' === $strParamType) {
+            $strExtra = serialize(array_filter(explode("\n", $arrConfig['extra'])));
+        } else {
+            $strExtra = $arrConfig['extra'];
+        }
         $arrConfigContents[$strTag] = array(
                 'param_chinese_name' => $strParamChineseName,
                 'param_type' => $strParamType,
@@ -65,6 +72,7 @@ function build_ui_config($arrExcelConfig)
     $strLastTag         = NULL;
 
     foreach ($arrExcelConfig as $arrConfig) {
+        
         if ($arrConfig['module'] !== NULL) {
             $strModule = $arrConfig['module'];
         }
@@ -97,6 +105,9 @@ function build_ui_config($arrExcelConfig)
         $bolIsRequired = $arrConfig['is_required'] === 'Yes' ? true : false;
         $bolAllowEmpty = $arrConfig['allow_empty'] === 'Yes' ? true : false;
         $mixDefault    = $arrConfig['default'];
+        if ($arrConfig['param_name'] === NULL) {
+            continue;
+        }
         $arrConfigContents[$strTag][$strReqRes][] = array(
                 'param_name'  => $arrConfig['param_name'],
                 'is_required' => $bolIsRequired,
@@ -143,7 +154,7 @@ function excel2array($strFilepath)
 {
     $arrExcel = array();
     //创建一个2007的读取对象
-    $objReader = PHPExcel_IOFactory::createReader('Excel2007'); 
+    $objReader = PHPExcel_IOFactory::createReader('Excel5'); 
     //读取一个xlsx文件
     $objPHPExcel = $objReader->load($strFilepath);
     //遍历工作表
