@@ -28,7 +28,9 @@ class Tofu_Log// extends Tofu_Core
         $strBacktrace = self::buildBackstrace($objException->getTrace());
         $strLog = sprintf("Exception: %s in %s on line %s\n%s", $objException->getFile(), $objException->getMessage(), $objException->getLine(), $strBacktrace);
         error_log($strLog, 3, APP_EXCEPTION_LOG_PATH);
-        echo $strLog;
+        if (ini_get("error_reporting")) {
+            echo $strLog;
+        }
     }
     public static function errorHandler($constErrno, $strErrorMessage, $strErrorFile, $intErrorLine)
     {
@@ -38,13 +40,25 @@ class Tofu_Log// extends Tofu_Core
         switch ($constErrno) {
             case E_USER_ERROR:
                 $strLog = 'Fatal error' . $strLog;
-                error_log($strLog, 3, APP_ERROR_LOG_PATH);
+                error_log($strLog, 3, APP_USER_ERROR_LOG_PATH);
                 break;
             case E_USER_WARNING:
                 $strLog = 'Warning' . $strLog;
-                error_log($strLog, 3, APP_WARNING_LOG_PATH);
+                error_log($strLog, 3, APP_USER_WARNING_LOG_PATH);
                 break;
             case E_USER_NOTICE:
+                $strLog = 'Notice' . $strLog;
+                error_log($strLog, 3, APP_USER_NOTICE_LOG_PATH);
+                break;
+            case E_ERROR:
+                $strLog = 'Fatal error' . $strLog;
+                error_log($strLog, 3, APP_ERROR_LOG_PATH);
+                break;
+            case E_WARNING:
+                $strLog = 'Warning' . $strLog;
+                error_log($strLog, 3, APP_WARNING_LOG_PATH);
+                break;
+            case E_NOTICE:
                 $strLog = 'Notice' . $strLog;
                 error_log($strLog, 3, APP_NOTICE_LOG_PATH);
                 break;
@@ -53,12 +67,16 @@ class Tofu_Log// extends Tofu_Core
                 error_log($strLog, 3, APP_UNKNOWN_LOG_PATH);
                 break;
         }
-        echo $strLog;
+        if (ini_get("error_reporting")) {
+            echo $strLog;
+        }
         return true;
     }
     public static function shutdownErrorHandler()
     {
-        var_dump(error_get_last());
+        if (ini_get("error_reporting")) {
+            var_dump(error_get_last());
+        }
     }
     private static function buildBackstrace($arrBacktrace)
     {
@@ -73,7 +91,7 @@ class Tofu_Log// extends Tofu_Core
             }
             $arrArgs = array();
             foreach ($arrItem['args'] as $mixArg) {
-                //$arrArgs[] = str_replace("\n", '', var_export($mixArg, true));
+                $arrArgs[] = str_replace("\n", '', var_export($mixArg, true));
             }
             $strBacktrace .= sprintf("#%s %s(%s): %s(%s)\n", $intNum++, $arrItem['file'], $arrItem['line'], $arrItem['function'], str_replace("\n", '', implode(', ', $arrArgs)));
         }

@@ -21,6 +21,11 @@ class Tofu_Env extends Tofu_Core
         define('APP_NOTICE_LOG_PATH', APP_LOG_PATH . '.notice.log');
         define('APP_UNKNOWN_LOG_PATH', APP_LOG_PATH . '.unknown.log');
         define('APP_EXCEPTION_LOG_PATH', APP_LOG_PATH . '.exception.log');
+
+        define('APP_USER_ERROR_LOG_PATH', APP_LOG_PATH . '.user.error.log');
+        define('APP_USER_WARNING_LOG_PATH',  APP_LOG_PATH . '.user.warning.log');
+        define('APP_USER_NOTICE_LOG_PATH', APP_LOG_PATH . '.user.notice.log');
+
         define('APP_MODULES_PATH', APP_PATH . '/application/modules');
         define('APP_CONF_PATH', APP_PATH . '/conf');
     }

@@ -12,7 +12,7 @@ if (!is_writeable($strOutputFilepath)) {
     mkdir($strOutputFilepath);
 }
 $strFilepath = $argv[1];
-$arrUiConfig = array('module', 'controller', 'action', 'method', 'response_format', 'req/res', 'param_name', 'is_required', 'allow_empty', 'default');
+$arrUiConfig = array('module', 'controller', 'action', 'method', 'response_format', 'req/res', 'require_login', 'check_sign', 'param_name', 'is_required', 'allow_empty', 'default');
 $arrParamsDictionary = array('param_name', 'param_chinese_name', 'param_type', 'length', 'extra', 'remarks');
 $arrWorksheets = array('ui_config' => $arrUiConfig, 'params_dictionary' => $arrParamsDictionary);
 $arrConf = excel2conf($strFilepath, $arrWorksheets);
@@ -99,15 +99,22 @@ function build_ui_config($arrExcelConfig)
         if (NULL != $arrConfig['req/res']) {
             $strReqRes = $arrConfig['req/res'];
         }
+        if (NULL != $arrConfig['require_login']) {
+            $arrConfigContents[$strTag]['require_login'] = $arrConfig['require_login'] === 'yes' ? true : false;
+        }
+        if (NULL != $arrConfig['check_sign']) {
+            $arrConfigContents[$strTag]['check_sign'] = $arrConfig['check_sign'] === 'yes' ? true : false;
+        }
         if (empty($strReqRes)) {
             die('输入输出有问题');
         }
-        $bolIsRequired = $arrConfig['is_required'] === 'Yes' ? true : false;
-        $bolAllowEmpty = $arrConfig['allow_empty'] === 'Yes' ? true : false;
+        $bolIsRequired = $arrConfig['is_required'] === 'yes' ? true : false;
+        $bolAllowEmpty = $arrConfig['allow_empty'] === 'yes' ? true : false;
         $mixDefault    = $arrConfig['default'];
         if ($arrConfig['param_name'] === NULL) {
             continue;
         }
+        var_dump($strReqRes);
         $arrConfigContents[$strTag][$strReqRes][] = array(
                 'param_name'  => $arrConfig['param_name'],
                 'is_required' => $bolIsRequired,
