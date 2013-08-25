@@ -1,5 +1,5 @@
 <?php
-class Timer
+class Tofu_Timer extends Tofu_Core
 {
     static protected $_arrData = array();
 
