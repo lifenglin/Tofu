@@ -46,10 +46,6 @@ depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
 <modified />
 </fileset>
 
-<fileset dir="${basedir}/tests">
-<include name="**/*.php" />
-<modified />
-</fileset>
 </apply>
 </target>
 
