@@ -26,7 +26,7 @@
  */
 class Tofu_Core
 {
-    static protected $arrSelf;
+    static protected $arrSelf = array();
 
     /**
      * Constructs a Tofu_Core object.
