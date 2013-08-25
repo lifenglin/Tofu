@@ -2,8 +2,7 @@
 
 <project name="name-of-project" default="build">
 <target name="build"
-depends="prepare,lint,phpcs-ci"/>
-<!-- depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpunit,phpcb"/> --> 
+depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpunit,phpcb"/>
 
 <target name="build-parallel"
 depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -47,6 +46,10 @@ depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
 <modified />
 </fileset>
 
+<fileset dir="${basedir}/tests">
+<include name="**/*.php" />
+<modified />
+</fileset>
 </apply>
 </target>
 
@@ -98,6 +101,7 @@ description="Find coding standard violations using PHP_CodeSniffer and print hum
 <exec executable="phpcs" output="/dev/null">
 <arg value="--report=checkstyle" />
 <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+<arg value="--standard=${basedir}/build/phpcs.xml" />
 <arg path="${basedir}/src" />
 </exec>
 </target>
