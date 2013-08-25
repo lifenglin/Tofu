@@ -21,7 +21,7 @@
  * @author Tobias Schlitt <toby@php.net> 
  * @license PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}
  */
-class Tofu_Log// extends Tofu_Core
+class Tofu_Log extends Tofu_Core
 {
     public static function exceptionHandler(exception $objException)
     {
