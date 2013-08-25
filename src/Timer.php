@@ -29,9 +29,10 @@ class Tofu_Timer extends Tofu_Core
     static protected $arrData = array();
 
     /**
-     * record begin time
-     *
-     * @see process()
+     * @param string $strName
+     * 记录某个行为的开始时间
+     * @access public
+     * @return float
      */
     static public function begin($strName = 'default')
     {
@@ -39,9 +40,10 @@ class Tofu_Timer extends Tofu_Core
     }
 
     /**
-     * record end time
-     *
-     * @see process()
+     * @param string $strName
+     * 记录某个行为的结束时间
+     * @access public
+     * @return float
      */
     static public function end($strName = 'default')
     {
@@ -49,9 +51,10 @@ class Tofu_Timer extends Tofu_Core
     }
 
     /**
-     * count time
-     *
-     * @see process()
+     * @param string $strName
+     * 计算某个行为的耗时
+     * @access public
+     * @return float
      */
     static public function count($strName = 'default')
     {
@@ -59,9 +62,10 @@ class Tofu_Timer extends Tofu_Core
     }
 
     /**
-     * count all time
-     *
-     * @see process()
+     * @param string $strName
+     * 计算全部行为的耗时
+     * @access public
+     * @return array
      */
     static public function countAll($strName = 'default')
     {
