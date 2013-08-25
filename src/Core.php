@@ -54,7 +54,7 @@ class Tofu_Core
     public static function getInstance()
     {
         $strClassName  = get_called_class();
-        if (!is_object(self::$arrSelf[$strClassName])) {
+        if (!array_key_exists($strClassName, self::$arrSelf) || !is_object(self::$arrSelf[$strClassName])) {
             $arrArgs       = func_get_args();
             $objReflection = new ReflectionClass($strClassName);
             self::$arrSelf[$strClassName] = $objReflection->newInstanceArgs($arrArgs);
