@@ -10,4 +10,9 @@ class Tofu_Bootstrap_Abstract extends Yaf_Bootstrap_Abstract
     {   
         Yaf_Registry::set('app_namespace', array(APP_NAME));
     }
+
+    public function _initLog(Yaf_Dispatcher $objDispatcher)
+    {
+        set_error_handler(array(Tofu_Log::getInstance(), 'errorHandler'));
+    }
 }
