@@ -26,7 +26,7 @@
  */
 class Tofu_Core
 {
-    static protected $arrSelf = array();
+    static protected $_arrSelf = array();
 
     /**
      * Constructs a Tofu_Core object.
@@ -36,12 +36,12 @@ class Tofu_Core
     public function __construct()
     {
         $strClassName  = get_called_class();
-        self::$arrSelf[$strClassName] = $this;
+        self::$_arrSelf[$strClassName] = $this;
         $arrArgs       = func_get_args();
         $strClassName  = get_called_class();
-        if (method_exists(self::$arrSelf[$strClassName], 'construct')) {
+        if (method_exists(self::$_arrSelf[$strClassName], 'construct')) {
             $objMethod = new ReflectionMethod($strClassName, 'construct');
-            $objMethod->invokeArgs(self::$arrSelf[$strClassName], $arrArgs);
+            $objMethod->invokeArgs(self::$_arrSelf[$strClassName], $arrArgs);
         }
     }
 
@@ -54,11 +54,12 @@ class Tofu_Core
     public static function getInstance()
     {
         $strClassName  = get_called_class();
-        if (!array_key_exists($strClassName, self::$arrSelf) || !is_object(self::$arrSelf[$strClassName])) {
+        if (!array_key_exists($strClassName, self::$_arrSelf)) {
             $arrArgs       = func_get_args();
             $objReflection = new ReflectionClass($strClassName);
-            self::$arrSelf[$strClassName] = $objReflection->newInstanceArgs($arrArgs);
+            $objClass = $objReflection->newInstanceArgs($arrArgs);
+            self::$_arrSelf[$strClassName] = $objClass;
         }
-        return self::$arrSelf[$strClassName];
+        return self::$_arrSelf[$strClassName];
     }
 }
