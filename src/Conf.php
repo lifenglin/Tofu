@@ -1,15 +1,29 @@
 <?php
 abstract class Tofu_Conf extends Tofu_Core
 {
-    protected $objConf = '';
-    abstract protected function getConfPath();
+    /**
+     * _objConf 
+     * 配置对象
+     * @var string
+     * @access protected
+     */
+    protected $_objConf = '';
+
+    /**
+     * _strConfPath 
+     * 配置路径
+     * @var string
+     * @access protected
+     */
+    protected $_strConfPath = '';
+
     public function construct()
     {
-        $this->objConf = new Yaf_Config_Ini($this->getConfPath());
+        $this->_objConf = new Yaf_Config_Ini($this->_strConfPath);
     }
+
     public function __get($strFlag)
     {
-        //todo:debug
         return $this->objConf->$strFlag;
     }
 }

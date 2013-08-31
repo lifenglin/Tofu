@@ -1,29 +1,4 @@
 <?php
-/**
- * Tofu_Error
- *
- * PHP version 5
- *
- * @category  PHP
- * @package   Tofu
- * @author    lifenglin <lifenglin1987@gmail.com>
- * @copyright 2013 lifenglin
- * @license   https://github.com/lifenglin/Tofu BSD Licence
- * @version   SVN: <svn_id>
- * @link      https://github.com/lifenglin/Tofu
- */
-
-/**
- * Tofu_Error
- *
- * @category  PHP
- * @package   Tofu
- * @author    lifenglin <lifenglin1987@gmail.com>
- * @copyright 2013 lifenglin1987@gmail.com
- * @license   https://github.com/lifenglin/Tofu BSD Licence
- * @version   Release: <package_version>
- * @link      https://github.com/lifenglin/Tofu
- */
 class Tofu_Error extends Tofu_Core
 {
     /**
@@ -32,7 +7,12 @@ class Tofu_Error extends Tofu_Core
      * @var array
      * @access private
      */
-    private $_arrError = array(0 => array('message' => 'success', 'prompt' => '成功'));
+    protected $_arrError = array(
+            0 => array('message' => 'success', 'prompt' => '成功'),
+            1 => array('message' => 'internal error', 'prompt' => '内部错误'),
+            );
+    protected $_defaultErrorNo = 0;
+
 
     /**
      * construct 
@@ -58,6 +38,13 @@ class Tofu_Error extends Tofu_Core
     public function getError($intNo = 0)
     {
         $arrError = $this->_arrError[$intNo];
-        return array('no' => $intNo, 'message' => $arrError['message'], 'prompt' => $arrError['prompt']);
+        if (empty($arrError['message']) || empty($arrError['prompt'])) {
+            $intNo = $this->_defaultErrorNo;
+            $arrError = $this->_arrError[$intNo];
+        }
+        $arrReturn['no'] = $intNo;
+        $arrReturn['message'] = $arrError['message'];
+        $arrReturn['prompt'] = $arrError['prompt'];
+        return $arrReturn;
     }
 }
