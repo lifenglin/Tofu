@@ -36,35 +36,39 @@ class Tofu_Log extends Tofu_Core
     {
         $arrBacktrace = debug_backtrace();
         $strBacktrace = self::buildBackstrace($arrBacktrace);
+        $strLog = sprintf(": %s in %s on line %s\n%s", $strErrorMessage, $strErrorFile, $intErrorLine, $strBacktrace);
         switch ($constErrno) {
             case E_USER_ERROR:
-                $strErrorType = 'Fatal error';
+                $strLog = 'Fatal error' . $strLog;
+                error_log($strLog, 3, APP_USER_ERROR_LOG_PATH);
                 break;
             case E_USER_WARNING:
-                $strErrorType = 'Warning';
+                $strLog = 'Warning' . $strLog;
+                error_log($strLog, 3, APP_USER_WARNING_LOG_PATH);
                 break;
             case E_USER_NOTICE:
-                $strErrorType = 'Notice';
+                $strLog = 'Notice' . $strLog;
+                error_log($strLog, 3, APP_USER_NOTICE_LOG_PATH);
                 break;
             case E_ERROR:
-                $strErrorType = 'Fatal error';
+                $strLog = 'Fatal error' . $strLog;
+                error_log($strLog, 3, APP_ERROR_LOG_PATH);
                 break;
             case E_WARNING:
-                $strErrorType = 'Warning';
+                $strLog = 'Warning' . $strLog;
+                error_log($strLog, 3, APP_WARNING_LOG_PATH);
                 break;
             case E_NOTICE:
-                $strErrorType = 'Notice';
+                $strLog = 'Notice' . $strLog;
+                error_log($strLog, 3, APP_NOTICE_LOG_PATH);
                 break;
             default:
-                $strErrorType = 'Unknown';
+                $strLog = 'Unknown' . $strLog;
+                error_log($strLog, 3, APP_UNKNOWN_LOG_PATH);
                 break;
         }
-        $strLog = sprintf(": %s in %s on line %s\n%s", $strErrorMessage, $strErrorFile, $intErrorLine, $strBacktrace);
-        error_log($strLog);
         if (ini_get("error_reporting")) {
-            $strBacktrace = str_replace("\n", "</br>", $strBacktrace);
-            $strPrintLog = sprintf("<br /><b>%s</b>  %s in <b>%s</b> on line <b>%s</b></br>%s</br>", $strErrorType, $strErrorMessage, $strErrorFile, $intErrorLine, $strBacktrace);
-            printf($strPrintLog);
+            echo $strLog;
         }
         return true;
     }
