@@ -1,37 +1,10 @@
 <?php
-/**
- * Tofu_Core 
- *
- * PHP version 5
- *
- * @category  PHP
- * @package   Tofu
- * @author    lifenglin <lifenglin1987@gmail.com>
- * @copyright 2013 lifenglin
- * @license   https://github.com/lifenglin/Tofu BSD Licence
- * @version   SVN: <svn_id>
- * @link      https://github.com/lifenglin/Tofu
- */
-
-/**
- * Tofu_Core 
- *
- * @category  PHP
- * @package   Tofu
- * @author    lifenglin <lifenglin1987@gmail.com>
- * @copyright 2013 lifenglin1987@gmail.com
- * @license   https://github.com/lifenglin/Tofu BSD Licence
- * @version   Release: <package_version>
- * @link      https://github.com/lifenglin/Tofu
- */
 class Tofu_Core
 {
     static protected $_arrSelf = array();
 
     /**
      * Constructs a Tofu_Core object.
-     *
-     * @see process()
      */
     public function __construct()
     {
@@ -47,8 +20,6 @@ class Tofu_Core
 
     /**
      * get a Tofu_Core instance.
-     *
-     * @see process()
      * @return object
      */
     public static function getInstance()

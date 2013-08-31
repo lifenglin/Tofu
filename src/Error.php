@@ -1,18 +1,8 @@
 <?php
 class Tofu_Error extends Tofu_Core
 {
-    /**
-     * _arrError 
-     * 
-     * @var array
-     * @access private
-     */
-    protected $_arrError = array(
-            0 => array('message' => 'success', 'prompt' => '成功'),
-            1 => array('message' => 'internal error', 'prompt' => '内部错误'),
-            );
-    protected $_defaultErrorNo = 0;
-
+    protected $_objCommonConf;
+    protected $_objErrorConf;
 
     /**
      * construct 
@@ -22,9 +12,10 @@ class Tofu_Error extends Tofu_Core
      * @access public
      * @return void
      */
-    public function construct($arrError)
+    public function construct(Tofu_Error_Conf $objConf)
     {
-        $this->_arrError = array_merge($this->_arrError, $arrError);
+        $this->_objCommonConf = Tofu_Error_CommonConf::getInstance();
+        $this->_objErrorConf = $objConf;
     }
 
     /**
@@ -37,14 +28,25 @@ class Tofu_Error extends Tofu_Core
      */
     public function getError($intNo = 0)
     {
-        $arrError = $this->_arrError[$intNo];
-        if (empty($arrError['message']) || empty($arrError['prompt'])) {
-            $intNo = $this->_defaultErrorNo;
-            $arrError = $this->_arrError[$intNo];
+        //获取指定错误
+        $strMessage = $this->_objErrorConf->error->get($intNo)->message;
+        $strPrompt = $this->_objErrorConf->error->get($intNo)->prompt;
+
+        //没取到，取默认
+        if (empty($strMessage) || empty($strPrompt)) {
+            $intNo = $this->_objErrorConf->error->get('default')->no;
+            $strMessage = $this->_objErrorConf->error->get($intNo)->message;
+            $strPrompt = $this->_objErrorConf->error->get($intNo)->prompt;
+        }
+        //没取到，取公共错误默认
+        if (empty($strMessage) || empty($strPrompt)) {
+            $intNo = $this->_objCommonConf->error->get('default')->no;
+            $strMessage = $this->_objCommonConf->error->get($intNo)->message;
+            $strPrompt = $this->_objCommonConf->error->get($intNo)->prompt;
         }
         $arrReturn['no'] = $intNo;
-        $arrReturn['message'] = $arrError['message'];
-        $arrReturn['prompt'] = $arrError['prompt'];
+        $arrReturn['message'] = $strMessage;
+        $arrReturn['prompt'] = $strPrompt;
         return $arrReturn;
     }
 }
