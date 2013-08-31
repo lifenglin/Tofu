@@ -26,7 +26,7 @@
  */
 class Tofu_Timer extends Tofu_Core
 {
-    static protected $arrData = array();
+    static protected $_arrData = array();
 
     /**
      * @param string $strName
@@ -36,7 +36,9 @@ class Tofu_Timer extends Tofu_Core
      */
     static public function begin($strName = 'default')
     {
-        return self::$arrData[$strName]['begin'] = self::$arrData[$strName]['end'] = microtime(true);
+        self::$_arrData[$strName]['begin'] = microtime(true);
+        self::$_arrData[$strName]['end'] = self::$_arrData[$strName]['begin'];
+        return self::$_arrData[$strName]['begin'];
     }
 
     /**
@@ -47,7 +49,7 @@ class Tofu_Timer extends Tofu_Core
      */
     static public function end($strName = 'default')
     {
-        return self::$arrData[$strName]['end'] = microtime(true);
+        return self::$_arrData[$strName]['end'] = microtime(true);
     }
 
     /**
@@ -58,7 +60,11 @@ class Tofu_Timer extends Tofu_Core
      */
     static public function count($strName = 'default')
     {
-        return round((self::$arrData[$strName]['end'] - self::$arrData[$strName]['begin']) * 1000);
+        $floatEnd = self::$_arrData[$strName]['end'];
+        $floatBegin = self::$_arrData[$strName]['begin'];
+        $floatDiff = $floatEnd - $floatBegin;
+        //换算成毫秒
+        return round($floatDiff * 1000);
     }
 
     /**
@@ -70,7 +76,7 @@ class Tofu_Timer extends Tofu_Core
     static public function countAll($strName = 'default')
     {
         $arrCount = array();
-        $arrKeys = array_keys(self::$arrData);
+        $arrKeys = array_keys(self::$_arrData);
         foreach ($arrKeys as $strName) {
             $arrCount[$strName] = self::count($strName);
         }
