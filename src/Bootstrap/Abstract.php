@@ -15,4 +15,16 @@ class Tofu_Bootstrap_Abstract extends Yaf_Bootstrap_Abstract
     {
         set_error_handler(array(Tofu_Log::getInstance(), 'errorHandler'));
     }
+
+    public function _initError(Yaf_Dispatcher $objDispatcher)
+    {
+        Tofu_Error_Conf::getInstance();
+    }
+
+    public function _initApplicationBootstrap(Yaf_Dispatcher $objDispatcher)
+    {   
+        if (method_exists($this, 'bootstrap')) {
+            $this->bootstrap($objDispatcher);
+        }   
+    }
 }

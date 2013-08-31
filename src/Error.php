@@ -12,9 +12,13 @@ class Tofu_Error extends Tofu_Core
      * @access public
      * @return void
      */
-    public function construct(Tofu_Error_Conf $objConf)
+    public function construct()
     {
         $this->_objCommonConf = Tofu_Error_CommonConf::getInstance();
+    }
+
+    public function setErrorConf(Tofu_Error_Conf $objConf)
+    {
         $this->_objErrorConf = $objConf;
     }
 
