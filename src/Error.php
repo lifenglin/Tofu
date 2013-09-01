@@ -30,28 +30,47 @@ class Tofu_Error extends Tofu_Core
      * @access public
      * @return array
      */
-    public function getError($strFlag = 0)
+    public function getError($strFlag = '')
     {
+        $strMessage = '';
+        $strPrompt = '';
+        $intCode = 0;
+
         //获取指定错误
-        $strMessage = $this->_objErrorConf->$strFlag->message;
-        $strPrompt = $this->_objErrorConf->$strFlag->prompt;
-        $intCode = $this->_objErrorConf->$strFlag->code;
+        if ($objConf = $this->_objErrorConf->$strFlag) {
+            $strMessage = $objConf->message;
+            $strPrompt = $objConf->prompt;
+            $intCode = $objConf->code;
+        }
+
+        //没取到，取公用
+        if (empty($strMessage) || empty($strPrompt)) {
+            if ($objConf = $this->_objCommonConf->$strFlag) {
+                $strMessage = $objConf->message;
+                $strPrompt = $objConf->prompt;
+                $intCode = $objConf->code;
+            }
+        }
 
         //没取到，取默认
         if (empty($strMessage) || empty($strPrompt)) {
-            $strMessage = $this->_objErrorConf->default->message;
-            $strPrompt = $this->_objErrorConf->default->prompt;
-            $intCode = $this->_objErrorConf->default->code;
+            if ($objConf = $this->_objErrorConf->default) {
+                $strMessage = $objConf->message;
+                $strPrompt = $objConf->prompt;
+                $intCode = $objConf->code;
+            }
         }
         //没取到，取公共错误默认
         if (empty($strMessage) || empty($strPrompt)) {
-            $strMessage = $this->_objCommonConf->default->message;
-            $strPrompt = $this->_objCommonConf->default->prompt;
-            $intCode = $this->_objCommonConf->default->code;
+            if ($objConf = $this->_objCommonConf->default) {
+                $strMessage = $objConf->message;
+                $strPrompt = $objConf->prompt;
+                $intCode = $objConf->code;
+            }
         }
-        $arrReturn['message'] = $strMessage;
-        $arrReturn['prompt'] = $strPrompt;
-        $arrReturn['code'] = $intCode;
+        $arrReturn['message'] = strval($strMessage);
+        $arrReturn['prompt'] = strval($strPrompt);
+        $arrReturn['code'] = intval($intCode);
         return $arrReturn;
     }
 }
