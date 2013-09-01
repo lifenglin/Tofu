@@ -52,10 +52,13 @@ class Tofu_Log extends Tofu_Core
         error_log("PHP {$strErrorType}$strLog");
         //如果打开了错误报告，打印出日志
         if (ini_get("error_reporting")) {
-            $strBacktrace = str_replace("\n", "</br>", $strBacktrace);
-            $strPrintLog = sprintf("<br /><b>%s</b>:  %s in <b>%s</b> on line <b>%s</b></br>%s</br>", $strErrorType, $strErrorMessage, $strErrorFile, $intErrorLine, $strBacktrace);
+            $objRequest = Yaf_Dispatcher::getInstance()->getRequest();
+            $strPrintLog = sprintf("\n<b>%s</b>:  %s in <b>%s</b> on line <b>%s</b>\n%s\n", $strErrorType,         $strErrorMessage, $strErrorFile, $intErrorLine, $strBacktrace);
+            if (!$objRequest->isCli()) {
+                $strPrintLog = str_replace("\n", "</br>", $strPrintLog);
+            }   
             printf($strPrintLog);
-        }   
+        }
         return true;
     }
 
