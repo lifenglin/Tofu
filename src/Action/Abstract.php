@@ -20,6 +20,8 @@ abstract class Tofu_Action_Abstract extends Yaf_Action_Controller
             $arrRequest = $this->_processRequest();
             $this->_execute($arrRequest);
         } catch (exception $objExc) {
+            $this->_error($objExc->getMessage());
+            trigger_error($objExc->getMessage(), E_USER_ERROR);
         }
         $this->_processResponse();
     }
