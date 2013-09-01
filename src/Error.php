@@ -33,21 +33,21 @@ class Tofu_Error extends Tofu_Core
     public function getError($intNo = 0)
     {
         //获取指定错误
-        $strMessage = $this->_objErrorConf->error->get($intNo)->message;
-        $strPrompt = $this->_objErrorConf->error->get($intNo)->prompt;
+        $strMessage = $this->_objErrorConf->error->get("code$intNo")->message;
+        $strPrompt = $this->_objErrorConf->error->get("code$intNo")->prompt;
 
         //没取到，取默认
         if (empty($strMessage) || empty($strPrompt)) {
             $intNo = $this->_objErrorConf->error->get('default')->no;
-            $strMessage = $this->_objErrorConf->error->get($intNo)->message;
-            $strPrompt = $this->_objErrorConf->error->get($intNo)->prompt;
-        }
+            $strMessage = $this->_objErrorConf->error->get("code$intNo")->message;
+            $strPrompt = $this->_objErrorConf->error->get("code$intNo")->prompt;
+        }   
         //没取到，取公共错误默认
         if (empty($strMessage) || empty($strPrompt)) {
             $intNo = $this->_objCommonConf->error->get('default')->no;
-            $strMessage = $this->_objCommonConf->error->get($intNo)->message;
-            $strPrompt = $this->_objCommonConf->error->get($intNo)->prompt;
-        }
+            $strMessage = $this->_objCommonConf->error->get("code$intNo")->message;
+            $strPrompt = $this->_objCommonConf->error->get("code$intNo")->prompt;
+        }   
         $arrReturn['no'] = $intNo;
         $arrReturn['message'] = $strMessage;
         $arrReturn['prompt'] = $strPrompt;

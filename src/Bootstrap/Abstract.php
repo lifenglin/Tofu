@@ -17,8 +17,10 @@ class Tofu_Bootstrap_Abstract extends Yaf_Bootstrap_Abstract
     }
 
     public function _initError(Yaf_Dispatcher $objDispatcher)
-    {
-        Tofu_Error::getInstance();
+    {   
+        $strErrorConf = Yaf_Application::app()->getConfig('application')->error->conf;
+        $objErrorConf = Tofu_Error_Conf::getInstance($strErrorConf);
+        Tofu_Error::getInstance()->setErrorConf($objErrorConf);
     }
 
     public function _initApplicationBootstrap(Yaf_Dispatcher $objDispatcher)
