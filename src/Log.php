@@ -16,7 +16,8 @@ class Tofu_Log extends Tofu_Core
             foreach ($arrItem['args'] as $mixArg) {
                 $arrArgs[] = str_replace("\n", '', var_export($mixArg, true));
             }
-            $strBacktrace .= sprintf("#%s %s(%s): %s(%s)\n", $intNum++, $arrItem['file'], $arrItem['line'], $arrItem['function'], str_replace("\n", '', implode(', ', $arrArgs)));
+            $strArgs = str_replace("\n", '', implode(', ', $arrArgs));
+            $strBacktrace .= sprintf("#%s %s(%s): %s(%s)\n", $intNum++, $arrItem['file'], $arrItem['line'], $arrItem['function'], $strArgs);
         }
         return trim($strBacktrace);
     }   
@@ -53,7 +54,7 @@ class Tofu_Log extends Tofu_Core
         //如果打开了错误报告，打印出日志
         if (ini_get("error_reporting")) {
             $objRequest = Yaf_Dispatcher::getInstance()->getRequest();
-            $strPrintLog = sprintf("\n<b>%s</b>:  %s in <b>%s</b> on line <b>%s</b>\n%s\n", $strErrorType,         $strErrorMessage, $strErrorFile, $intErrorLine, $strBacktrace);
+            $strPrintLog = sprintf("\n<b>%s</b>:  %s in <b>%s</b> on line <b>%s</b>\n%s\n", $strErrorType, $strErrorMessage, $strErrorFile, $intErrorLine, $strBacktrace);
             if (!$objRequest->isCli()) {
                 $strPrintLog = str_replace("\n", "</br>", $strPrintLog);
             }   
@@ -65,7 +66,10 @@ class Tofu_Log extends Tofu_Core
     public static function exceptionHandler(exception $objException)
     {
         $strBacktrace = self::buildBackstrace($objException->getTrace());
-        $strLog = sprintf("Exception: %s in %s on line %s\n%s", $objException->getFile(), $objException->getMessage(), $objException->getLine(), $strBacktrace);
+        $strFile = $objException->getFile();
+        $strMessage = $objException->getMessage();
+        $strLine = $objException->getLine();
+        $strLog = sprintf("Exception: %s in %s on line %s\n%s", $strFile, $strMessage, $strLine, $strBacktrace);
         error_log($strLog, 3, APP_EXCEPTION_LOG_PATH);
         if (ini_get("error_reporting")) {
             echo $strLog;
