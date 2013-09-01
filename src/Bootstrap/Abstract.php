@@ -18,7 +18,7 @@ class Tofu_Bootstrap_Abstract extends Yaf_Bootstrap_Abstract
 
     public function _initError(Yaf_Dispatcher $objDispatcher)
     {
-        Tofu_Error_Conf::getInstance();
+        Tofu_Error::getInstance();
     }
 
     public function _initApplicationBootstrap(Yaf_Dispatcher $objDispatcher)

@@ -17,8 +17,11 @@ abstract class Tofu_Conf extends Tofu_Core
      */
     protected $_strConfPath = '';
 
-    public function construct()
-    {
+    public function construct($strConfPath = '') 
+    {   
+        if ($strConfPath) {
+            $this->setConfPath($strConfPath);
+        }   
         $this->_objConf = new Yaf_Config_Ini($this->_getConfPath());
     }
 
